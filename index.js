@@ -2,7 +2,7 @@
 // Morgan to CRUD Clubs
 // Dave to CRUD Users
 
-
+// Club class by Morgan P
 class Club {
     constructor(name){
         this.name = name;
@@ -10,16 +10,17 @@ class Club {
     }
 
 }
-
+// Member class by Dave B
 class Member {
     constructor(userName, id) {
         this.userName = userName;
         this.id = id;
     }
 }
-
+// Initial ClubCrud get, create, and delete added by Morgan P. 
 class ClubCrud {
-    static url = 'https://crudcrud.com/api/4c2c67f89d6d42c990b1c2336d954cee' + '/clubs';
+    static url = 'https://crudcrud.com/api/33263da7d76749b0b173f3e4b319f908' + '/clubs';
+    
 
     static getAllClubs() {
         return $.get(this.url);
@@ -42,23 +43,29 @@ class ClubCrud {
     //crudcrud fails when passing id to API in PUT request
     static updateClub(club){
         let putData = JSON.stringify({name: club.name, users: club.users});
-        return $.ajax ({
+        let ajaxOptions = {
             url: this.url + `/${club._id}`,
             dataType: 'json',
             data: putData,
             contentType: 'application/json',
             type:'PUT',
-        });
+            async: false,
+            // success: function (data) { successFunction(data); },
+            // error: function (jqXHR, textStatus, errorThrown) { console.log(errorThrown);console.log(jqXHR) }
+        };
+        // console.log(putData);
+        return $.ajax(ajaxOptions);
+        
     }
 
     static deleteClub(id) {
-        return $.ajax ({
+        return $.ajax({
             url: this.url + `/${id}`,
             type: 'DELETE',
         });
     }
 }
-
+// DOMManager and initial CRUD by Morgan P.
 class DOMManager {
     static clubs;
 
@@ -76,28 +83,38 @@ class DOMManager {
 
     static deleteClub(id){
         ClubCrud.deleteClub(id)
-            .then(() => {
+            .done(() => {
                 return ClubCrud.getAllClubs();
             })
-            .then((clubs) => this.render(clubs));
+            .done((clubs) => this.render(clubs));
     }
-
+    
+    // Add Member Crud added by Dave B.
     static addMember(id) {
         for(let club of this.clubs) {
             if(club._id == id) {
-                club.users.push(new Member($(`#${club._id}-user-name`).val(), club.users.length));
+                let userIndex = 1;
+                if(!club.users.length == 0) { 
+                  userIndex = club.users[club.users.length - 1]['id'] + 1;
+                } 
+                club.users.push(new Member($(`#${club._id}-user-name`).val(), userIndex));
 
                 ClubCrud.updateClub(club)
-                .then(() => {
+                .then(() => {                                        
+                    return ClubCrud.getAllClubs();
+                // Hack for failed promises due to empty response on successful update from crudcrud.com
+                }, () => { 
                     return ClubCrud.getAllClubs();
                 })
-                .then((clubs) => this.render(clubs));
+                .done((clubs) => {
+                    console.log(clubs);
+                    this.render(clubs)
+                });
             }
         }
     }
-
+    // Delete Member Crud Added by Dave B.
     static deleteMember(clubId, memberId) {
-        // console.log(`delete member clicked: ${clubId} - ${memberId}`);
         for(let club of this.clubs) {
             if(club._id == clubId) {
                 for(let user of club.users) {
@@ -106,14 +123,17 @@ class DOMManager {
                         ClubCrud.updateClub(club)
                         .then(() => {
                             return ClubCrud.getAllClubs();
-                        })
+                        // Hack for failed promises due to empty response on successful update from crudcrud.com
+                        }, () => {
+                            return ClubCrud.getAllClubs();                            
+                        })                        
                         .then((clubs) => this.render(clubs));
                     }
                 }
             }
         }
     }
-
+    // Initial DOM Club Rendering by Morgan P.
     static render(clubs){
         this.clubs = clubs;
         $('#app').empty();
@@ -137,13 +157,14 @@ class DOMManager {
                 </div>
                 `
             );
+            // Add Member Rendering Added by Dave B. 
             let users = club.users;
             for(let i = 0; i < users.length; i++) {
                 $(`#${club._id}`).find('.card-body').append(
                     `<div class="row">
                         <div class="col-sm">${users[i].userName}</div>
                         <div class="col-sm">
-                            <button id="user${i}" class="btn btn-warning" onclick="DOMManager.deleteMember('${club._id}', '${i}')">Delete Member</button>
+                            <button id="user${users[i].id}" class="btn btn-warning" onclick="DOMManager.deleteMember('${club._id}', '${users[i].id}')">Delete Member</button>
                         </div>
                     </div>
                     `
