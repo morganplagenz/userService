@@ -85,7 +85,7 @@ class DOMManager {
     static addMember(id) {
         for(let club of this.clubs) {
             if(club._id == id) {
-                club.users.push(new Member($(`#${club._id}-username`).val(), club.users.length));
+                club.users.push(new Member($(`#${club._id}-user-name`).val(), club.users.length));
 
                 ClubCrud.updateClub(club)
                 .then(() => {
@@ -97,6 +97,7 @@ class DOMManager {
     }
 
     static deleteMember(clubId, memberId) {
+        // console.log(`delete member clicked: ${clubId} - ${memberId}`);
         for(let club of this.clubs) {
             if(club._id == clubId) {
                 for(let user of club.users) {
@@ -142,7 +143,7 @@ class DOMManager {
                     `<div class="row">
                         <div class="col-sm">${users[i].userName}</div>
                         <div class="col-sm">
-                            <button id="user${i}" class="btn btn-warning" onclick="DOMManager.deleteMember(${club._id}, ${i})">Delete Member</button>
+                            <button id="user${i}" class="btn btn-warning" onclick="DOMManager.deleteMember('${club._id}', '${i}')">Delete Member</button>
                         </div>
                     </div>
                     `
