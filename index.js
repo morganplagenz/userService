@@ -80,7 +80,7 @@ class DOMManager {
             .then((clubs) => this.render(clubs));
     }
 
-    static deleteClub(id){
+    static deleteClub(id){ 
         ClubCrud.deleteClub(id)
             .then(() => {
                 return ClubCrud.getAllClubs();
