@@ -11,8 +11,15 @@ class Club {
 
 }
 
+class Member {
+    constructor(userName, id) {
+        this.userName = userName;
+        this.id = id;
+    }
+}
+
 class ClubCrud {
-    static url = 'https://891e8726-623d-4833-96a3-8ec50f9fdac5.mock.pstmn.io//v1/home';
+    static url = 'https://crudcrud.com/api/4c2c67f89d6d42c990b1c2336d954cee' + '/clubs';
 
     static getAllClubs() {
         return $.get(this.url);
@@ -75,6 +82,38 @@ class DOMManager {
             .then((clubs) => this.render(clubs));
     }
 
+    static addMember(id) {
+        for(let club of this.clubs) {
+            if(club._id == id) {
+                club.users.push(new Member($(`#${club._id}-user-name`).val(), club.users.length));
+
+                ClubCrud.updateClub(club)
+                .then(() => {
+                    return ClubCrud.getAllClubs();
+                })
+                .then((clubs) => this.render(clubs));
+            }
+        }
+    }
+
+    static deleteMember(clubId, memberId) {
+        // console.log(`delete member clicked: ${clubId} - ${memberId}`);
+        for(let club of this.clubs) {
+            if(club._id == clubId) {
+                for(let user of club.users) {
+                    if(user.id == memberId) {
+                        club.users.splice(club.users.indexOf(user), 1);
+                        ClubCrud.updateClub(club)
+                        .then(() => {
+                            return ClubCrud.getAllClubs();
+                        })
+                        .then((clubs) => this.render(clubs));
+                    }
+                }
+            }
+        }
+    }
+
     static render(clubs){
         this.clubs = clubs;
         $('#app').empty();
@@ -90,13 +129,26 @@ class DOMManager {
                             <div class="row">
                                 <div class="col-sm">
                                     <input type="text" id="${club._id}-user-name" class="form-control" placeholder="Member Name">
+                                    <button id="${club._id}-add-member" class="btn btn-warning" onclick="DOMManager.addMember('${club._id}')">Add Member</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 `
-            )
+            );
+            let users = club.users;
+            for(let i = 0; i < users.length; i++) {
+                $(`#${club._id}`).find('.card-body').append(
+                    `<div class="row">
+                        <div class="col-sm">${users[i].userName}</div>
+                        <div class="col-sm">
+                            <button id="user${i}" class="btn btn-warning" onclick="DOMManager.deleteMember('${club._id}', '${i}')">Delete Member</button>
+                        </div>
+                    </div>
+                    `
+                )
+            }
         }
     }
 }
