@@ -49,11 +49,7 @@ class ClubCrud {
             data: putData,
             contentType: 'application/json',
             type:'PUT',
-            async: false,
-            // success: function (data) { successFunction(data); },
-            // error: function (jqXHR, textStatus, errorThrown) { console.log(errorThrown);console.log(jqXHR) }
         };
-        // console.log(putData);
         return $.ajax(ajaxOptions);
         
     }
@@ -106,10 +102,7 @@ class DOMManager {
                 }, () => { 
                     return ClubCrud.getAllClubs();
                 })
-                .done((clubs) => {
-                    console.log(clubs);
-                    this.render(clubs)
-                });
+                .then((clubs) => this.render(clubs));
             }
         }
     }
