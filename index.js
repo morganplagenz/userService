@@ -19,7 +19,7 @@ class Member {
 }
 // Initial ClubCrud get, create, and delete added by Morgan P. 
 class ClubCrud {
-    static url = 'https://crudcrud.com/api/33263da7d76749b0b173f3e4b319f908' + '/clubs';
+    static url = 'https://crudcrud.com/api/4d4a71af85cd4f3facffb33e2bc7a960' + '/clubs';
     
 
     static getAllClubs() {
@@ -49,11 +49,7 @@ class ClubCrud {
             data: putData,
             contentType: 'application/json',
             type:'PUT',
-            async: false,
-            // success: function (data) { successFunction(data); },
-            // error: function (jqXHR, textStatus, errorThrown) { console.log(errorThrown);console.log(jqXHR) }
         };
-        // console.log(putData);
         return $.ajax(ajaxOptions);
         
     }
@@ -106,10 +102,7 @@ class DOMManager {
                 }, () => { 
                     return ClubCrud.getAllClubs();
                 })
-                .done((clubs) => {
-                    console.log(clubs);
-                    this.render(clubs)
-                });
+                .then((clubs) => this.render(clubs));
             }
         }
     }
