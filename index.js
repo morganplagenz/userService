@@ -21,16 +21,24 @@ class ClubCrud {
     static getClub(id) {
         return $.get(this.url + `/${id}`);
     }
-
+    
+    // crudcrud requires json data and content type and stringified data
     static createClub(club) {
-        return $.post(this.url, club);
+        return $.post({
+            url: this.url,
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(club),
+        });
     }
-
+    
+    //crudcrud fails when passing id to API in PUT request
     static updateClub(club){
+        let putData = JSON.stringify({name: club.name, users: club.users});
         return $.ajax ({
             url: this.url + `/${club._id}`,
             dataType: 'json',
-            data: JSON.stringify(club),
+            data: putData,
             contentType: 'application/json',
             type:'PUT',
         });
