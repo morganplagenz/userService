@@ -140,7 +140,7 @@ class DOMManager {
             }
         }
     }
-    // Initial DOM Club Rendering by Morgan P..
+    // Initial DOM Club Rendering by Morgan P.
     static render(clubs){
         this.clubs = clubs;
         $('#app').empty();
