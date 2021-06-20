@@ -19,7 +19,7 @@ class Member {
 }
 // Initial ClubCrud get, create, and delete added by Morgan P. 
 class ClubCrud {
-    static url = 'https://crudcrud.com/api/33263da7d76749b0b173f3e4b319f908' + '/clubs';
+    static url = 'https://crudcrud.com/api/4d4a71af85cd4f3facffb33e2bc7a960' + '/clubs';
     
 
     static getAllClubs() {
