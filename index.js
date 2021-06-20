@@ -18,7 +18,9 @@ class Member {
 }
 // Initial ClubCrud get, create, and delete added by Morgan P. 
 class ClubCrud {
+
     static url = 'https://crudcrud.com/api/4977d73078e04b15803ba6df0c72beda' + '/clubs';
+
     
 
     static getAllClubs() {
@@ -53,6 +55,8 @@ class ClubCrud {
             // error: function (jqXHR, textStatus, errorThrown) { console.log(errorThrown);console.log(jqXHR) }
         };
         // console.log(putData);
+        };
+
         return $.ajax(ajaxOptions);
         
     }
@@ -82,7 +86,7 @@ class DOMManager {
 
     static deleteClub(id){
         ClubCrud.deleteClub(id)
-            .then(() => {
+            .done(() => {
                 return ClubCrud.getAllClubs();
             })
             .done((clubs) => this.render(clubs));
@@ -105,10 +109,14 @@ class DOMManager {
                 }, () => { 
                     return ClubCrud.getAllClubs();
                 })
+
                 .done((clubs) => {
                     console.log(clubs);
                    this.render(clubs)
                 });
+
+                .then((clubs) => this.render(clubs));
+
             }
         }
     }
